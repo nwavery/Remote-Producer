@@ -1,0 +1,182 @@
+{
+  "type": "record",
+  "namespace": "com.example.platform.telemetry",
+  "name": "AssetReport",
+  "doc": "Schema for remote asset telemetry data.",
+  "fields": [
+    {
+      "name": "assetId",
+      "type": "string",
+      "doc": "Unique identifier for the reporting asset"
+    },
+    {
+      "name": "reportTimestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "UTC timestamp in milliseconds when the telemetry data was generated"
+    },
+    {
+      "name": "currentLocation",
+      "type": {
+        "type": "record",
+        "name": "LocationCoordinates",
+        "doc": "Geographic coordinate data",
+        "fields": [
+          {
+            "name": "latitude",
+            "type": "double",
+            "doc": "Latitude in decimal degrees"
+          },
+          {
+            "name": "longitude",
+            "type": "double",
+            "doc": "Longitude in decimal degrees"
+          },
+          {
+            "name": "elevation",
+            "type": ["null", "double"],
+            "default": null,
+            "doc": "Elevation in meters above reference datum (optional)"
+          },
+          {
+            "name": "positionalAccuracy",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Estimated horizontal accuracy in meters (optional)"
+          },
+          {
+            "name": "velocity",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Velocity over ground in meters per second (optional)"
+          },
+          {
+            "name": "bearing",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Direction of movement in degrees from true north (0-359.9) (optional)"
+          }
+        ]
+      },
+      "doc": "Asset's current geographic location"
+    },
+    {
+      "name": "operationalParameters",
+      "type": ["null", {
+        "type": "record",
+        "name": "OperationalMetrics",
+        "doc": "Key operational metrics from the asset",
+        "fields": [
+          {
+            "name": "metricValueA",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Primary operational metric reading (e.g., cycle count, internal pulse) (optional)"
+          },
+          {
+            "name": "metricValueB",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Secondary operational metric reading (e.g., internal temperature) (optional)"
+          },
+          {
+            "name": "currentMode",
+            "type": ["null", {
+                "type": "enum",
+                "name": "OperatingMode",
+                "symbols": ["IDLE", "LOW_POWER", "ACTIVE_PROCESSING", "TRANSIT", "MAINTENANCE", "UNKNOWN_MODE"]
+            }],
+            "default": null,
+            "doc": "Asset's current operating mode (optional)"
+          }
+        ]
+      }],
+      "default": null,
+      "doc": "Key operational parameters of the asset (optional)"
+    },
+    {
+      "name": "subSystemStatus",
+      "type": ["null", {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "SubSystemModule",
+          "doc": "Status of an individual sub-system or component",
+          "fields": [
+            {
+              "name": "moduleId",
+              "type": "string",
+              "doc": "Identifier for the sub-system or module"
+            },
+            {
+              "name": "moduleType",
+              "type": "string",
+              "doc": "Type of sub-system (e.g., 'SENSOR_ARRAY_X', 'COMM_UNIT_A', 'POWER_CELL_1', 'NAVIGATION_SUBSYSTEM')"
+            },
+            {
+              "name": "powerLevel",
+              "type": ["null", "int"],
+              "default": null,
+              "doc": "Power level in percentage (0-100) or other relevant unit if applicable (optional)"
+            },
+            {
+              "name": "operationalState",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "General state (e.g., 'NOMINAL', 'DEGRADED', 'OFFLINE', 'ERROR_CODE_XYZ') (optional)"
+            },
+            {
+                "name": "resourceLevel",
+                "type": ["null", "int"],
+                "default": null,
+                "doc": "Remaining level of a consumable resource or usage counter (optional)"
+            }
+          ]
+        }
+      }],
+      "default": null,
+      "doc": "Status of asset's integrated sub-systems or components (optional array)"
+    },
+    {
+      "name": "assignmentId",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Identifier for the current operational assignment or tracking session (optional)"
+    },
+    {
+      "name": "linkQuality",
+      "type": ["null", {
+        "type": "record",
+        "name": "CommunicationLinkStats",
+        "fields": [
+            {
+                "name": "protocolType",
+                "type": ["null", {"type": "enum", "name": "LinkProtocol", "symbols": ["PROTOCOL_A", "PROTOCOL_B", "SATELLITE_LINK", "MESH_NETWORK", "LOCAL_RF", "UNKNOWN_LINK"]}],
+                "default": null,
+                "doc": "Type of communication link used (optional)"
+            },
+            {
+                "name": "signalMetric1",
+                "type": ["null", "int"],
+                "doc": "Primary signal quality metric (e.g., RSSI) (optional)",
+                "default": null
+            },
+            {
+                "name": "signalMetric2",
+                "type": ["null", "float"],
+                "doc": "Secondary signal quality metric (e.g., SNR/SINR) (optional)",
+                "default": null
+            }
+        ]
+      }],
+      "default": null,
+      "doc": "Communication link quality details (optional)"
+    },
+    {
+        "name": "systemIntegrity",
+        "type": ["null", "string"],
+        "default": null,
+        "doc": "Overall integrity status of the telemetry reporting system (e.g., 'ALL_SUBSYSTEMS_GREEN', 'PARTIAL_DATA_LOSS_DETECTED', 'SENSOR_FAULT_MAJOR') (optional)"
+    }
+  ]
+}
